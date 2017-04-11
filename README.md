@@ -204,7 +204,7 @@ A comprehensive list of open issues can be found at [http://jira.perfect.org:808
 ## Further Information
 For more information on the Perfect project, please visit [perfect.org](http://perfect.org).
 
-## Now Perfect is Available in WeChat (Simplified Chinese)
+## Now News about Perfect is Available in WeChat (Simplified Chinese Only)
 <p align="center">
 <img src="qr.png">
 </p>

@@ -3,9 +3,9 @@ import XCTest
 
 class CloudinaryTests: XCTestCase {
     func testExample() {
-      let cloud = Cloudinary(cloud_name: "your_account_name", user_name: "your_user_name", api_key: "your_api_key", api_secret: "your_api_secret")
+      let cloud = Cloudinary(cloud_name: "dh0t9fojh", user_name: "enochwills", api_key: "188382239119756", api_secret: "yUm_U5o4hI5Es1mvqcm1uGUHupQ")
       do {
-        let r = try cloud.upload(fileName: "/path/to/some.jpg")
+        let r = try cloud.upload(fileName: "/tmp/qr.png")
         print(r)
       }catch(let err) {
         XCTFail(err.localizedDescription)
