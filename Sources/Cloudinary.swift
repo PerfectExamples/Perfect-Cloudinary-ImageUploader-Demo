@@ -31,8 +31,10 @@ public class Cloudinary {
     case INVALID_DIGEST
 
     /// when CURL fault
-    case PROCESS_FAULT(String)
-  }
+    case INVALID_URL(String)
+  }//end 
+
+  public var DEBUG = false
 
   /// constructor
   /// - parameters:
@@ -66,26 +68,27 @@ public class Cloudinary {
         throw Exception.INVALID_DIGEST
     }//end guard
 
-    let flags = [
-      "-v", "-X", "POST",
-      "-F", "timestamp=\(timestamp)",
-      "-F", "api_key=\(api_key)",
-      "-F", "signature=\(signature)",
-      "-F", "tags=\(user_name)",
-      "-F", "file=@\(fileName)",
-      "https://api.cloudinary.com/v1_1/\(cloud_name)/\(resource_type)/upload"
-    ]//end flags
+    let fields = CURL.POSTFields()
+    let _ = fields.append(key: "timestamp", value: "\(timestamp)")
+    let _ = fields.append(key: "api_key", value: api_key)
+    let _ = fields.append(key: "signature", value: signature)
+    let _ = fields.append(key: "tags", value: user_name)
+    let _ = fields.append(key: "file", path: fileName)
 
-    // although curl has a very powerful form of https://curl.haxx.se/libcurl/c/curl_formadd.html
-    // curl_formadd() function is not supported by Swift language due to the inifinte parameters are fully banned
-    // then it is not possible to implement it in PerfectCURL unless adding more C sources
-    // so before any further better solutions, we have to use the system shell instead
-    let proc = try SysProcess("curl", args: flags, env: [("PATH", "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin")])
-    let ret = try proc.wait(hang: true)
-    guard ret == 0, let stdout = try proc.stdout?.readString() else {
-      throw Exception.PROCESS_FAULT(try proc.stderr?.readString() ?? "Fault Without Reasons")
-    }//end if
-
-    return try stdout.jsonDecode() as? [String:Any] ?? [:]
+    let curl = CURL(url: "https://api.cloudinary.com/v1_1/\(cloud_name)/\(resource_type)/upload")
+    let ret = curl.formAddPost(fields: fields)
+    defer { curl.close() }
+    guard ret.rawValue == 0 else {
+      throw Exception.INVALID_URL(curl.strError(code: ret))
+    }//end guard
+    let _ = curl.setOption(CURLOPT_VERBOSE, int: self.DEBUG ? 1 : 0 )
+    let r = curl.performFullySync()
+    var ptr = r.bodyBytes
+    ptr.append(0)
+    let s = String(cString: ptr)
+    guard r.resultCode == 0, r.responseCode == 200 else {
+      throw Exception.INVALID_URL(s)
+    }//end guard
+    return try s.jsonDecode() as? [String:Any] ?? [:]
   }//end upload
 }//end Cloudinary
