@@ -1,4 +1,4 @@
-# Cloudinary-ImageUploader Demo
+# Cloudinary云图片上载示范程序
 
 <p align="center">
     <a href="http://perfect.org/get-involved.html" target="_blank">
@@ -38,52 +38,52 @@
     </a>
 </p>
 
-## Quick Start
+## 快速上手
 
-This demo shows how to upload an image file to Cloudinary by using the latest Perfect features such as `Perfect-Crypto`, an updated version of `Perfect-CURL` with `POSTFields()` structure support (April 2017) and `Perfect-JSON` decoder as well.
+本项目展示了如何用Swift语言快速将图片上传到Cloudinary，并且使用了Perfect函数库中的最新功能诸如`Perfect-Crypto`加密函数库、带有`POSTFields`表单提交控制数据结构的新版`Perfect-CURL`（2017年4月），以及`Perfect-JSON`解码工具等等。
 
-Ensure you have installed and activated the latest Swift 3.1 tool chain.
+请确认您的计算机上安装了最新版本的Swift 3.1 tool chain工具链。
 
-### Get Your Cloudinary Tokens
+### 获取 Cloudinary 通行证
 
-Before trying this example, a [Cloudinary Account from https://cloudinary.com](https://cloudinary.com) is essentially required.
+在使用本项目之前，您需要一个有效的[Cloudinary 账号，在这里注册：https://cloudinary.com](https://cloudinary.com) 。
 
 
 <p align="center">
 <img src="tokens.png">
 </p>
 
-Once registered, copy down these important account information from the dashboard page, as demo above:
+一旦注册成功，请在欢迎页面仪表盘中将图示中的关键信息抄录下来，内容必须包括：
 
-1. Your User Name
-2. Your Cloud Name
-3. API Key
-4. API Secret
+1. 用户名
+2. 您的Cloudinary 云名称“Cloud Name”
+3. API Key 应用程序接口服务钥匙
+4. API Secret 应用程序接口服务密码
 
-### Download Source Code
+### 下载源程序
 
-Clone this project to your local computer, as the following command:
+请将本项目下载到您的计算机，如下命令所示：
 
 ```
 $ git clone https://github.com/PerfectExamples/Perfect-Cloudinary-ImageUploader-Demo.git
 ```
 
-### Try the Demo
+### 测试一下
 
-Now please prepare one of sample pictures to perform the test and remember the path name, for example: `/tmp/mypic.png`.
+请自行准备一个图片文件，并记录其关键路径名称，比如：`/tmp/mypic.png`.
 
-Then open the `Tests` folder for `CloudinaryTests.swift` and customize it to all above settings:
+然后打开项目文件夹，在 `Tests`测试目录下面找到 `CloudinaryTests.swift`，用编辑器打开并输入之前都准备好的参数：
 
 ``` swift
 func testExample() {
-		// please change all these strings to your settings
+		// 请将下列字符串变量手工改为您自己的程序配置
       let cloud = Cloudinary(
-      cloud_name: "your cloud name here", 
-      user_name: "your user name here", 
-      api_key: "your api key", 
-      api_secret: "your api secret")
+      cloud_name: "您的云名称，Cloud Name", 
+      user_name: "用户名", 
+      api_key: "api key 应用程序接口服务钥匙", 
+      api_secret: "your api 应用程序接口服务密码")
       do {
-      	// please make sure that a valid path to your image file to upload
+      	// 请确保要上传的图片文件具有有效的路径名称：
         let r = try cloud.upload(fileName: "/tmp/mypic.png")
         print(r)
       }catch(let err) {
@@ -93,7 +93,7 @@ func testExample() {
 
 ```
 
-Once completed, simply run `$ swift test` in your terminal, and some interesting positive responses should pop up:
+编辑完毕并保存文件后，只需要在终端内运行 `$ swift test` 就可以看到服务器返回的一些有趣的响应：
 
 ```
 Compile Swift Module 'Cloudinary' (1 sources)
@@ -106,47 +106,47 @@ Test Case '-[CloudinaryTests.CloudinaryTests testExample]' started.
 ["format": "png", 
 "etag": "6cc23320d763b4a6272e44a208b796eb", 
 "width": 200, 
-"original_filename": "mypic", 
-"tags": ["YOU USER NAME APPEARED HERE"], 
+"original_filename": "原图片文件名会出现在这里", 
+"tags": ["用户名会出现在这里"], 
 "type": "upload", 
-"signature": "YOUR_DIGTAL_SIGNATURE_FOR_HERE", 
+"signature": "这里是为这张图片进行的数码签名", 
 "height": 200, 
 "bytes": 18574, 
-"secure_url": "https://res.cloudinary.com/YOUR_ACCOUNT_NAME/image/upload/SOME_PATH/SOME_FILE_NAME.png", 
+"secure_url": "https://res.cloudinary.com/账户名称/image/upload/路径/文件名.png", 
 "created_at": "2017-04-11T14:45:14Z", 
 "resource_type": "image", 
 "version": 1491921914, 
-"public_id": "PUBLIC_ID_OF_THE_UPLOADED_FILE", 
-"url": "http://res.cloudinary.com/YOUR_ACCOUNT/image/upload/SOME_PATH/SOME_FILE_NAME.png"]
+"public_id": "已上传文件的公开名称", 
+"url": "http://res.cloudinary.com/账户名称/image/upload/路径/文件名.png"]
 Test Case '-[CloudinaryTests.CloudinaryTests testExample]' passed (1.017 seconds).
 ```
 
-Then your image file should appear in the Media Library on Cloudinary, Cheers!
+这时您的Cloudinary的媒体库上应该看到新上传的文件了吧？庆祝一下！
 
-### Go Deeper
+### 深入探秘
 
-If looked into the source, the actually key part of this example is only a few lines.
+如果您详细观察源代码，可以发现核心部分只有少数几行：
 
-Firstly, the demo encodes user name / secret with a timestamp int a `signature`:
+首先，示范代码将用户名和应用程序接口密码混合到时间戳以生成数字签名`signature`:
 
 ``` swift
 
-// get the current time
+// 获取当前时间戳
 let timestamp = time(nil)
 
 
-// combine the api secret with your name and timestamp
+// 将应用程序服务接口密码和用户名混合并加入时间戳
 let value = "tags=\(user_name)&timestamp=\(timestamp)\(api_secret)"
 
 
-// encode the whole string with SHA-1 algorithm
+// 采用 SHA-1 算法加密
 guard let sha1 = value.digest(.sha1)?.encode(.hex),
 
-// generate the signature - now your secret
+// 生成数字签名字符串
 let signature = String(validatingUTF8:sha1) 
 ```
 
-Secondly, a `CURL.POSTFields` structure has been applied to store all the settings:
+第二步，调用`CURL.POSTFields`数据结构以保存之前准备的所有变量：
 
 ``` swift
 let fields = CURL.POSTFields()
@@ -157,7 +157,7 @@ _ = fields.append(key: "tags", value: user_name)
 _ = fields.append(key: "file", path: fileName)
 ```
 
-The third step, which is the final step, is to call a CURL command which is actually performing the upload:
+第三步也就是最后一步，是调用CURL命令执行上传：
 
 ```
 let curl = CURL(url: "https://api.cloudinary.com/v1_1/\(cloud_name)/\(resource_type)/upload")
@@ -165,46 +165,47 @@ let ret = curl.formAddPost(fields: fields)
 let r = curl.performFullySync()
 ```
 
-With an extra tip, the demo also provides a very good example of safely decode the JSON response from Cloudinary:
+这里再买一送一，程序中还演示了如何安全地针对Cloudinary服务器返回内容进行JSON解码：
 
 ``` swift
 var ptr = r.bodyBytes
-// append a zero to the body buffer is a good idea to complete a NULL-terminated string
+// 返回的数据末尾增加一个零是用于处理字符串的一个好主意
 ptr.append(0)
 
 let s = String(cString: ptr)
 guard r.resultCode == 0, r.responseCode == 200 else {
-	// throw something here
+	// 出错了！
 }//end guard
 
-// decode the json expression
+// 进行 JSON 解码
 return try s.jsonDecode() as? [String:Any] ?? [:]
 ```
 
-⚠️*NOTE*⚠️ The actual calling procedure of the above demo is equivalent to the CURL command:
+⚠️*注意*⚠️ 实际上以上整个程序完全等同于一个CURL命令：
 
 ```
 $ curl -X POST \
-	-F timestamp=YOUR_TIME_STAMP  \
-	-F api_key=YOUR_API_KEY \
-	-F signature=YOUR_SIGNATURE \
-	-F tags=YOUR_USER_NAME
-	-F file=@/tmp/mypic.png
+	-F timestamp=当前时间戳  \
+	-F api_key=应用程序服务接口钥匙 \
+	-F signature=数字签名 \
+	-F tags=用户名 \
+	-F file=@/tmp/mypic.png \
 	"https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/RESOUCE_TYPE/upload"
 ``` 
 
-## Issues
+## 问题报告、内容贡献和客户支持
 
-We are transitioning to using JIRA for all bugs and support related issues, therefore the GitHub issues has been disabled.
+我们目前正在过渡到使用JIRA来处理所有源代码资源合并申请、修复漏洞以及其它有关问题。因此，GitHub 的“issues”问题报告功能已经被禁用了。
 
-If you find a mistake, bug, or any other helpful suggestion you'd like to make on the docs please head over to [http://jira.perfect.org:8080/servicedesk/customer/portal/1](http://jira.perfect.org:8080/servicedesk/customer/portal/1) and raise it.
+如果您发现了问题，或者希望为改进本文提供意见和建议，[请在这里指出](http://jira.perfect.org:8080/servicedesk/customer/portal/1).
 
-A comprehensive list of open issues can be found at [http://jira.perfect.org:8080/projects/ISS/issues](http://jira.perfect.org:8080/projects/ISS/issues)
+在您开始之前，请参阅[目前待解决的问题清单](http://jira.perfect.org:8080/projects/ISS/issues).
 
-## Further Information
-For more information on the Perfect project, please visit [perfect.org](http://perfect.org).
 
-## Now Perfect is Available in WeChat (Simplified Chinese)
+## 更多信息
+关于本项目更多内容，请参考[perfect.org](http://perfect.org).
+
+## 扫一扫 Perfect 官网微信号
 <p align="center">
 <img src="qr.png">
 </p>
